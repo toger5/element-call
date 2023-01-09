@@ -20,19 +20,37 @@ import {
   RegistrationType,
 } from "./PosthogAnalytics";
 
+type IpType = "IpV6" | "IpV4";
+
 interface CallEnded extends IPosthogEvent {
   eventName: "CallEnded";
   callId: string;
   callParticipantsOnLeave: number;
   callParticipantsMax: number;
   callDuration: number;
+  iceDelaySum: number;
+  iceDelayAverage: number;
+  iceDelayMax: number;
+  ipType: IpType;
+  usesTurn: boolean;
 }
 
 export class CallEndedTracker {
-  private cache: { startTime: Date; maxParticipantsCount: number } = {
+  DEFAULT_CACHE = {
     startTime: new Date(0),
     maxParticipantsCount: 0,
+    iceDelays: [],
+    ipType: undefined,
+    usesTurn: undefined,
   };
+
+  private cache: {
+    startTime: Date;
+    maxParticipantsCount: number;
+    iceDelays: number[];
+    ipType?: IpType;
+    usesTurn?: boolean;
+  } = this.DEFAULT_CACHE;
 
   cacheStartCall(time: Date) {
     this.cache.startTime = time;
@@ -45,7 +63,28 @@ export class CallEndedTracker {
     );
   }
 
+  // NOTE usage:
+  // PosthogAnalytics.instance.eventCallEnded.setIpType()
+  // PosthogAnalytics.instance.eventCallEnded.setUsesTurn()
+  // PosthogAnalytics.instance.eventCallEnded.addIceDelay()
+  // these need to called anywhere during or before each call.
+
+  setIpType(ipType: IpType) {
+    this.cache.ipType = ipType;
+  }
+  setUsesTurn(usesTurn: boolean) {
+    this.cache.usesTurn = usesTurn;
+  }
+  // this has to be called once per other user in every call. After each call the list will be resetted.
+  addIceDelay(iceDelay: number) {
+    this.cache.iceDelays.push(iceDelay);
+  }
+
   track(callId: string, callParticipantsNow: number, sendInstantly: boolean) {
+    const iceDelaySum = this.cache.iceDelays.reduce(
+      (sum, delay) => sum + delay,
+      0
+    );
     PosthogAnalytics.instance.trackEvent<CallEnded>(
       {
         eventName: "CallEnded",
@@ -53,9 +92,16 @@ export class CallEndedTracker {
         callParticipantsMax: this.cache.maxParticipantsCount,
         callParticipantsOnLeave: callParticipantsNow,
         callDuration: (Date.now() - this.cache.startTime.getTime()) / 1000,
+        iceDelaySum: iceDelaySum,
+        iceDelayAverage: iceDelaySum / this.cache.iceDelays.length,
+        iceDelayMax: Math.max(...this.cache.iceDelays),
+        ipType: this.cache.ipType,
+        usesTurn: this.cache.usesTurn,
       },
       { send_instantly: sendInstantly }
     );
+    // reset cache:
+    this.cache = this.DEFAULT_CACHE;
   }
 }
 
