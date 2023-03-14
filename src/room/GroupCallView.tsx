@@ -36,6 +36,7 @@ import { PosthogAnalytics } from "../analytics/PosthogAnalytics";
 import { useMediaHandler } from "../settings/useMediaHandler";
 import { findDeviceByName, getDevices } from "../media-utils";
 import { callTracer } from "../telemetry/otel";
+import { useCallEventInstrumentation } from "../otel/callEventInstrumentation";
 
 declare global {
   interface Window {
@@ -62,6 +63,8 @@ export function GroupCallView({
   roomIdOrAlias,
   groupCall,
 }: Props) {
+  useCallEventInstrumentation(client, groupCall);
+
   const {
     state,
     error,
