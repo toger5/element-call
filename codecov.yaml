@@ -6,7 +6,9 @@ coverage:
     project:
       default:
         # Track the impact of changes on overall coverage without blocking PRs
-        informational: true
+        informational: true,
+        paths:
+          - "src"
     patch:
       default:
         # Expect 80% coverage on all lines that a PR touches
