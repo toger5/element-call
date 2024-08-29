@@ -4,7 +4,6 @@ Showcase for full mesh video chat powered by Matrix, implementing [MSC3401](http
 
 Discussion in [#webrtc:matrix.org: ![#webrtc:matrix.org](https://img.shields.io/matrix/webrtc:matrix.org)](https://matrix.to/#/#webrtc:matrix.org)
 
-test 
 ## Getting Started
 
 `element-call` is built against the `robertlong/group-call` branch of [matrix-js-sdk](https://github.com/matrix-org/matrix-js-sdk/pull/1902). Because of how this package is configured and Vite's requirements, you will need to clone it locally and use `yarn link` to stich things together.
