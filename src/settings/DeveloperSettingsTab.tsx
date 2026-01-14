@@ -315,6 +315,7 @@ export const DeveloperSettingsTab: FC<Props> = ({
               url: livekitRoom.url || "unknown",
             })}
           </h4>
+          {/* not translating LivekitAlias sice its a technical term valid in all languages */}
           <p>LivekitAlias: {livekitRoom.livekitAlias}</p>
           {livekitRoom.isLocal && <p>ws-url: {localSfuUrl?.href}</p>}
           <p>
@@ -327,11 +328,11 @@ export const DeveloperSettingsTab: FC<Props> = ({
               : "undefined"}
             {livekitRoom.room.metadata}
           </pre>
-          <p>Local Participant</p>
+          <p>{t("developer_mode.local_participant")}</p>
           <pre className={styles.pre}>
             {livekitRoom.room.localParticipant.identity}
           </pre>
-          <p>Remote Participants</p>
+          <p>{t("developer_mode.remote_participant")}</p>
           <ul>
             {Array.from(livekitRoom.room.remoteParticipants.keys()).map(
               (id) => (

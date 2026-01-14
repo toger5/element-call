@@ -79,6 +79,7 @@
     "hostname": "Hostname: {{hostname}}",
     "livekit_server_info": "LiveKit Server Info",
     "livekit_sfu": "LiveKit SFU: {{url}}",
+    "local_participant": "Local Participants",
     "matrix_id": "Matrix ID: {{id}}",
     "matrixRTCMode": {
       "Comptibility": {
@@ -96,6 +97,7 @@
       "title": "MatrixRTC mode"
     },
     "mute_all_audio": "Mute all audio (participants, reactions, join sounds)",
+    "remote_participant": "Remote Participants",
     "show_connection_stats": "Show connection statistics",
     "url_params": "URL parameters"
   },
